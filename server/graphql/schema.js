@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-core";
+const { gql } = require("apollo-server-express");
 
 const typeDefs = gql`
   type User {
@@ -7,8 +7,14 @@ const typeDefs = gql`
     password: String!
   }
 
-  type mutation {
-    createUser(username: String!, password: String!): User!
+  type Query {
+    users: [User!]!
+    # Add other query fields as needed
+  }
+
+  type Mutation {
+    createUser(username: String!, password: String!): User
+    # Add other mutation fields as needed
   }
 `;
 

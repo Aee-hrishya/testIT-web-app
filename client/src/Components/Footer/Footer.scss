@@ -1,0 +1,14 @@
+.footer {
+  height: 30vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  background-color: #2a2b2e;
+
+  .copyright {
+    width: fit-content;
+    margin-bottom: 1rem;
+    color: white;
+  }
+}

@@ -1,0 +1,45 @@
+.card {
+  width: 15rem;
+  max-width: 15rem;
+  height: 20rem;
+  max-height: 20rem;
+  padding: 10px;
+  border-radius: 15px;
+  margin-left: 2rem;
+  background-color: #d8eaed;
+  //   text-align: center;
+
+  .img-div {
+    display: flex;
+    justify-content: center;
+    .img-section {
+      width: 4rem;
+      height: 4rem;
+    }
+  }
+
+  .card-title {
+    // max-width: 15rem;
+    height: 2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .card-info {
+    position: relative; /* Required for the ::after pseudo-element */
+    max-height: 13rem; /* Limit the height of the element */
+    overflow: hidden; /* Hide overflow content */
+    // padding-right: 1rem;
+    line-height: 1rem;
+
+    &::after {
+      content: "..."; /* Ellipsis */
+      position: absolute; /* Positioning relative to the parent */
+      bottom: 0; /* Align to the bottom */
+      right: 0; /* Align to the right */
+      background: #d8eaed; /* Background color to match the card */
+      //   padding-left: 1rem;
+    }
+  }
+}

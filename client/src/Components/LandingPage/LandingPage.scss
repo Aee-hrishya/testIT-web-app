@@ -1,0 +1,51 @@
+.main-description {
+  height: 40vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  justify-content: center;
+  background-color: #cce5fc;
+
+  .title {
+    height: fit-content;
+    width: fit-content;
+    margin-left: 20%;
+  }
+
+  .title-info {
+    margin-top: 0;
+    margin-left: 20%;
+    width: fit-content;
+  }
+}
+
+.tests {
+  height: 60vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  .tests-section-title {
+    height: fit-content;
+    width: fit-content;
+    margin-top: 2%;
+  }
+
+  .card-section {
+    width: 80rem;
+    max-width: 80rem;
+    display: flex;
+    // justify-content: space-between;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    position: relative; /* Ensure absolute positioning works properly */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer and Edge */
+
+    &::-webkit-scrollbar {
+      display: none; /* For Chrome, Safari, and Opera */
+    }
+  }
+}

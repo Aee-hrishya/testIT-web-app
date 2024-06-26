@@ -9,7 +9,7 @@ const checkPasswordStrength = (password) => {
 
   let score = 0;
 
-  if (!password) return "";
+  if (!password) return "Password is Required.";
 
   // Check password length
   if (password.length > 8) score += 1;

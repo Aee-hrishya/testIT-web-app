@@ -17,11 +17,11 @@
 
     .main-form-contents {
       margin-top: 60px;
-      height: 10rem;
+      height: 12rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: start;
+      justify-content: space-between;
 
       label {
         font-size: 17px;
@@ -39,6 +39,11 @@
           box-shadow: 0 0 10px rgb(215, 227, 230);
         }
       }
+    }
+
+    .username-error-hint {
+      font-size: small;
+      color: red;
     }
 
     .login-btn {

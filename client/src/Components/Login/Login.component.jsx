@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Login.scss";
 import { Link } from "react-router-dom";
 import useLocalStorage from "../../Hooks/useLocalStorage";
@@ -6,20 +6,49 @@ import checkPasswordStrength from "../../Utils/checkPasswordStrength";
 
 const Login = () => {
   const [signup, setSignup] = useLocalStorage("userSignup", false);
+  const [username, setUsername] = useLocalStorage("username", "");
   const [password, setPassword] = useLocalStorage("password", "");
   const [passStrength, setPassStrength] = useLocalStorage(
     "passwordStrength",
     password
   );
+  const [submit, setSubmit] = useState(false);
 
   const switchToSignupOrLoginPage = (e) => {
     e.preventDefault();
     setSignup(!signup);
   };
 
-  const handleChange = (e) => {
+  const handleUsernameChange = (e) => {
+    setUsername(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
     setPassword(e.target.value);
     setPassStrength(checkPasswordStrength(password));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (password.length >= 8 && passStrength.includes("Password is strong")) {
+      setSubmit(true);
+    } else if (password.length === 0) {
+      setPassStrength("Password is Required.");
+      setSubmit(false);
+    } else {
+      setSubmit(false);
+    }
+
+    if (username.length >= 3 && username.length <= 20) {
+      setSubmit(true);
+    } else {
+      setUsername("Username is not in proper format.");
+      setSubmit(false);
+    }
+
+    //check if frontend username and password validations are done and then call the endpoint we need
+    if (submit) {
+    }
   };
 
   return (
@@ -37,7 +66,13 @@ const Login = () => {
                 id="username-field"
                 name="username"
                 placeholder="Enter username here..."
+                onChange={handleUsernameChange}
               />
+              <p className="username-error-hint">
+                {username.includes("Username is not in proper format.")
+                  ? "Username is not in proper format."
+                  : ""}
+              </p>
             </div>
             <br />
             <div className="password-section">
@@ -50,7 +85,7 @@ const Login = () => {
                 name="password"
                 placeholder="Enter password here..."
                 value={password}
-                onChange={handleChange}
+                onChange={handlePasswordChange}
               />
               <p
                 className={
@@ -61,7 +96,7 @@ const Login = () => {
                     : "password-weak"
                 }
               >
-                {password === "" ? "" : passStrength}
+                {password ? passStrength : passStrength}
               </p>
             </div>
             <br />
@@ -70,6 +105,7 @@ const Login = () => {
             type="submit"
             value={signup ? "Sign Up" : "Login"}
             className="login-btn"
+            onClick={handleSubmit}
           />
         </form>
         <Link

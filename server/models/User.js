@@ -1,16 +1,18 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true,
-    minlength: [3, "Username must be at least 3 characters long"],
-    maxlength: [20, "Username must be at most 20 characters long"],
+const userSchema = new mongoose.Schema(
+  {
+    _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      minlength: [3, "Username must be at least 3 characters long"],
+      maxlength: [20, "Username must be at most 20 characters long"],
+    },
+    password: { type: String, required: true },
   },
-  password: { type: String, required: true },
-  created_at: { type: Date, default: Date.now },
-  updated_at: { type: Date, default: Date.now },
-});
+  { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
+);
 
 module.exports = mongoose.model("User", userSchema);

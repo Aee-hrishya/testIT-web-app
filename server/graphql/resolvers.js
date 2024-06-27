@@ -1,12 +1,12 @@
-const { User } = require("../models/User");
-const { bcrypt } = require("bcrypt");
+const User = require("../models/User");
+const bcrypt = require("bcrypt");
 
 const resolvers = {
   Mutation: {
     createUser: async (_, { username, password }) => {
       try {
-        //Validate password field
-        if (!password || password.trim === "") {
+        // Validate password field
+        if (!password || password.trim() === "") {
           return {
             success: false,
             error: "Password is required.",
@@ -14,30 +14,29 @@ const resolvers = {
         }
 
         const saltRounds = 10;
-        //hash password for safety reasons
-        const hashedPassword = bcrypt.hash(password, saltRounds);
-        const newUser = new User({
+        // Hash password for safety reasons
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const newUser = await User.create({
           username,
           password: hashedPassword,
         });
 
-        await newUser.save();
-
         return {
           success: true,
-          newUser,
+          user: newUser,
         };
       } catch (error) {
-        //we are using default mongodb error handling here as our User schema has username field set to "unique:true"
-        if (error.code == 11000) {
+        if (error.code === 11000) {
+          // Duplicate key error inbuild way to handle error using mongodb
           return {
             success: false,
             error: "Username already exists.",
           };
         }
 
-        //We are using the default mongodb error handling here as our username field has 2 options minLength and maxLength
-        if (error.name === "validationError") {
+        if (error.name === "ValidationError") {
+          // Mongoose validation error
           return {
             success: false,
             error: error.message,

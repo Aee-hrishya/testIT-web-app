@@ -3,6 +3,8 @@ import "./Login.scss";
 import { Link } from "react-router-dom";
 import useLocalStorage from "../../Hooks/useLocalStorage";
 import checkPasswordStrength from "../../Utils/checkPasswordStrength";
+import CREATE_USER from "../../graphql/mutations/createUser";
+import { useMutation } from "@apollo/client";
 
 const Login = () => {
   const [signup, setSignup] = useLocalStorage("userSignup", false);
@@ -13,6 +15,7 @@ const Login = () => {
     password
   );
   const [submit, setSubmit] = useState(false);
+  const [createUser, { data, loading, error }] = useMutation(CREATE_USER);
 
   const switchToSignupOrLoginPage = (e) => {
     e.preventDefault();
@@ -28,7 +31,7 @@ const Login = () => {
     setPassStrength(checkPasswordStrength(password));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password.length >= 8 && passStrength.includes("Password is strong")) {
       setSubmit(true);
@@ -47,7 +50,22 @@ const Login = () => {
     }
 
     //check if frontend username and password validations are done and then call the endpoint we need
-    if (submit) {
+    if (submit && signup) {
+      try {
+        const { data } = await createUser({
+          variables: { username, password },
+        });
+        if (data && data.createUser.success) {
+          console.log("User created:", data.createUser.user);
+        } else {
+          console.error(
+            "Error creating user:",
+            data.createUser.error || "Unknown error"
+          );
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
     }
   };
 
@@ -84,7 +102,6 @@ const Login = () => {
                 id="password-field"
                 name="password"
                 placeholder="Enter password here..."
-                value={password}
                 onChange={handlePasswordChange}
               />
               <p

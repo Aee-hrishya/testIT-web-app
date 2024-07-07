@@ -10,6 +10,14 @@ const typeDefs = gql`
     success: Boolean!
     error: String
     user: User
+    token: String
+  }
+
+  type ExistingUserResponse {
+    success: Boolean!
+    error: String
+    user: User
+    token: String
   }
 
   type Query {
@@ -19,6 +27,7 @@ const typeDefs = gql`
 
   type Mutation {
     createUser(username: String!, password: String!): CreateUserResponse
+    loginUser(username: String!, password: String!): ExistingUserResponse
     # Add other mutation fields as needed
   }
 `;

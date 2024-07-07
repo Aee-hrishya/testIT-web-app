@@ -4,7 +4,7 @@ const mongoose = require("./db");
 require("dotenv").config();
 const { ApolloServer } = require("apollo-server-express");
 const typeDefs = require("./graphql/schema");
-const resolvers = require("./graphql/resolvers");
+const resolvers = require("./graphql/resolvers/resolvers");
 
 const startServer = async () => {
   const app = express();

@@ -5,17 +5,28 @@ import useLocalStorage from "../../Hooks/useLocalStorage";
 import checkPasswordStrength from "../../Utils/checkPasswordStrength";
 import CREATE_USER from "../../graphql/mutations/createUser";
 import { useMutation } from "@apollo/client";
+import LOGIN_USER from "../../graphql/mutations/loginUser";
+import checkUsernameStrength from "../../Utils/checkUsernameStrength";
 
 const Login = () => {
-  const [signup, setSignup] = useLocalStorage("userSignup", false);
-  const [username, setUsername] = useLocalStorage("username", "");
-  const [password, setPassword] = useLocalStorage("password", "");
-  const [passStrength, setPassStrength] = useLocalStorage(
-    "passwordStrength",
-    password
-  );
+  const [signup, setSignup] = useState(false);
+  const [username, setUsername] = useState("");
+  const [usernameStrength, setUsernameStrength] = useState("");
+  const [password, setPassword] = useState("");
+  const [passStrength, setPassStrength] = useState("");
   const [submit, setSubmit] = useState(false);
-  const [createUser, { data, loading, error }] = useMutation(CREATE_USER);
+  const [
+    createUser,
+    {
+      data: createUserData,
+      loading: createUserLoading,
+      error: createUserError,
+    },
+  ] = useMutation(CREATE_USER);
+  const [
+    loginUser,
+    { data: loginUserData, loading: loginUserLoading, error: loginUserError },
+  ] = useMutation(LOGIN_USER);
 
   const switchToSignupOrLoginPage = (e) => {
     e.preventDefault();
@@ -24,6 +35,7 @@ const Login = () => {
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
+    setUsernameStrength(checkUsernameStrength(username));
   };
 
   const handlePasswordChange = (e) => {
@@ -45,7 +57,7 @@ const Login = () => {
     if (username.length >= 3 && username.length <= 20) {
       setSubmit(true);
     } else {
-      setUsername("Username is not in proper format.");
+      setUsernameStrength("Username is not in proper format.");
       setSubmit(false);
     }
 
@@ -62,6 +74,32 @@ const Login = () => {
             "Error creating user:",
             data.createUser.error || "Unknown error"
           );
+          if (data.createUser.error.includes("User")) {
+            setUsernameStrength(data.createUser.error);
+          } else {
+            setPassStrength(data.createUser.error);
+          }
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    } else if (submit && !signup) {
+      try {
+        const { data } = await loginUser({
+          variables: { username, password },
+        });
+        if (data && data.loginUser.success) {
+          console.log("User logged in: ", data.loginUser.user);
+        } else {
+          console.log(
+            "Error logging into the user",
+            data.loginUser.error || "Unknown error"
+          );
+          if (data.loginUser.error.includes("User")) {
+            setUsernameStrength(data.loginUser.error);
+          } else {
+            setPassStrength(data.loginUser.error);
+          }
         }
       } catch (error) {
         console.log(error.message);
@@ -87,9 +125,7 @@ const Login = () => {
                 onChange={handleUsernameChange}
               />
               <p className="username-error-hint">
-                {username.includes("Username is not in proper format.")
-                  ? "Username is not in proper format."
-                  : ""}
+                {usernameStrength === "" ? "" : usernameStrength}
               </p>
             </div>
             <br />
@@ -113,7 +149,7 @@ const Login = () => {
                     : "password-weak"
                 }
               >
-                {password ? passStrength : passStrength}
+                {passStrength === "" ? "" : passStrength}
               </p>
             </div>
             <br />

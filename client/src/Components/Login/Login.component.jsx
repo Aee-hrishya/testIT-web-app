@@ -30,6 +30,8 @@ const Login = () => {
 
   const switchToSignupOrLoginPage = (e) => {
     e.preventDefault();
+    setUsernameStrength("");
+    setPassStrength("");
     setSignup(!signup);
   };
 
@@ -44,21 +46,34 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
+    let passwordErrorCounter = 0;
     e.preventDefault();
     if (password.length >= 8 && passStrength.includes("Password is strong")) {
       setSubmit(true);
     } else if (password.length === 0) {
       setPassStrength("Password is Required.");
       setSubmit(false);
+      passwordErrorCounter++;
     } else {
       setSubmit(false);
+      passwordErrorCounter++;
     }
 
     if (username.length >= 3 && username.length <= 20) {
       setSubmit(true);
+      if (passwordErrorCounter === 1) {
+        setPassStrength("Password is not in proper format.");
+        setSubmit(false);
+        return;
+      }
     } else {
       setUsernameStrength("Username is not in proper format.");
       setSubmit(false);
+      if (passwordErrorCounter === 1) {
+        setPassStrength("Password is not in proper format.");
+        setSubmit(false);
+      }
+      return;
     }
 
     //check if frontend username and password validations are done and then call the endpoint we need

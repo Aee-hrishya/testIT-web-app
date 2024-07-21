@@ -4,6 +4,7 @@ const typeDefs = gql`
   type User {
     id: ID!
     username: String!
+    role: String!
   }
 
   type CreateUserResponse {
@@ -13,7 +14,7 @@ const typeDefs = gql`
     token: String
   }
 
-  type ExistingUserResponse {
+  type LoginUserResponse {
     success: Boolean!
     error: String
     user: User
@@ -26,8 +27,12 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createUser(username: String!, password: String!): CreateUserResponse
-    loginUser(username: String!, password: String!): ExistingUserResponse
+    createUser(
+      username: String!
+      password: String!
+      role: String!
+    ): CreateUserResponse
+    loginUser(username: String!, password: String!): LoginUserResponse
     # Add other mutation fields as needed
   }
 `;

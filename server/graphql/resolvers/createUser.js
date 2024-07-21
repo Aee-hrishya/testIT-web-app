@@ -2,7 +2,7 @@ const User = require("../../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const createUserResolver = async (_, { username, password }) => {
+const createUserResolver = async (_, { username, password, role }) => {
   try {
     // Validate password field
     if (!password || password.trim() === "") {

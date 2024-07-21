@@ -8,7 +8,9 @@ const LOGIN_USER = gql`
       user {
         id
         username
+        role
       }
+      token
     }
   }
 `;

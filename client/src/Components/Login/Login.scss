@@ -39,6 +39,10 @@
           box-shadow: 0 0 10px rgb(215, 227, 230);
         }
       }
+
+      .role-checkbox-hidden {
+        display: none;
+      }
     }
 
     .username-error-hint {

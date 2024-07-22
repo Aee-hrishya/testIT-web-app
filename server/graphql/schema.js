@@ -21,9 +21,13 @@ const typeDefs = gql`
     token: String
   }
 
+  type DashboardResponse {
+    success: Boolean!
+    error: String
+  }
+
   type Query {
-    users: [User!]!
-    # Add other query fields as needed
+    getProtectedRouteDashboard: DashboardResponse!
   }
 
   type Mutation {

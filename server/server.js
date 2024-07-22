@@ -5,6 +5,7 @@ require("dotenv").config();
 const { ApolloServer } = require("apollo-server-express");
 const typeDefs = require("./graphql/schema");
 const resolvers = require("./graphql/resolvers/resolvers");
+const { getUserFromToken } = require("./middleware/getUserFromToken");
 
 const startServer = async () => {
   const app = express();
@@ -14,6 +15,11 @@ const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    context: ({ req }) => {
+      const token = req.authorization.header || "";
+      const user = getUserFromToken(token);
+      return { user };
+    },
   });
 
   await server.start();

@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Login.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useLocalStorage from "../../Hooks/useLocalStorage";
 import checkPasswordStrength from "../../Utils/checkPasswordStrength";
 import CREATE_USER from "../../graphql/mutations/createUser";
 import { useMutation } from "@apollo/client";
 import LOGIN_USER from "../../graphql/mutations/loginUser";
 import checkUsernameStrength from "../../Utils/checkUsernameStrength";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../../Redux/Slices/userSlice";
 
 const Login = () => {
   const [signup, setSignup] = useState(false);
@@ -14,7 +16,9 @@ const Login = () => {
   const [usernameStrength, setUsernameStrength] = useState("");
   const [password, setPassword] = useState("");
   const [passStrength, setPassStrength] = useState("");
-  const [submit, setSubmit] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const navigate = useNavigate();
+
   const [
     createUser,
     {
@@ -27,6 +31,9 @@ const Login = () => {
     loginUser,
     { data: loginUserData, loading: loginUserLoading, error: loginUserError },
   ] = useMutation(LOGIN_USER);
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
   const switchToSignupOrLoginPage = (e) => {
     e.preventDefault();
@@ -45,45 +52,50 @@ const Login = () => {
     setPassStrength(checkPasswordStrength(password));
   };
 
-  const handleSubmit = async (e) => {
-    let passwordErrorCounter = 0;
-    e.preventDefault();
-    if (password.length >= 8 && passStrength.includes("Password is strong")) {
-      setSubmit(true);
-    } else if (password.length === 0) {
-      setPassStrength("Password is Required.");
-      setSubmit(false);
-      passwordErrorCounter++;
-    } else {
-      setSubmit(false);
-      passwordErrorCounter++;
-    }
+  const handleCheckboxChange = (e) => {
+    setIsChecked(e.target.checked);
+  };
 
-    if (username.length >= 3 && username.length <= 20) {
-      setSubmit(true);
-      if (passwordErrorCounter === 1) {
-        setPassStrength("Password is not in proper format.");
-        setSubmit(false);
-        return;
-      }
-    } else {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (username.length < 3 || username.length > 20) {
       setUsernameStrength("Username is not in proper format.");
-      setSubmit(false);
-      if (passwordErrorCounter === 1) {
-        setPassStrength("Password is not in proper format.");
-        setSubmit(false);
-      }
       return;
     }
 
-    //check if frontend username and password validations are done and then call the endpoint we need
-    if (submit && signup) {
-      try {
+    if (password.length === 0) {
+      setPassStrength("Password is Required.");
+      return;
+    } else if (
+      password.length < 8 ||
+      !passStrength.includes("Password is strong")
+    ) {
+      setPassStrength("Password is not in proper format.");
+      return;
+    }
+
+    // At this point, all validations have passed
+    try {
+      let role;
+      isChecked ? (role = "admin") : (role = "student");
+
+      if (signup) {
         const { data } = await createUser({
-          variables: { username, password },
+          variables: { username, password, role },
         });
+
         if (data && data.createUser.success) {
           console.log("User created:", data.createUser.user);
+          const token = data.createUser.token;
+          localStorage.setItem("authToken", token); // set token in local storage
+          dispatch(
+            setUser({
+              token: token,
+              user: data.createUser.user,
+            })
+          );
+          navigate("/dashboard");
         } else {
           console.error(
             "Error creating user:",
@@ -95,16 +107,22 @@ const Login = () => {
             setPassStrength(data.createUser.error);
           }
         }
-      } catch (error) {
-        console.log(error.message);
-      }
-    } else if (submit && !signup) {
-      try {
+      } else {
         const { data } = await loginUser({
           variables: { username, password },
         });
+
         if (data && data.loginUser.success) {
           console.log("User logged in: ", data.loginUser.user);
+          const token = data.loginUser.token;
+          localStorage.setItem("authToken", token);
+          dispatch(
+            setUser({
+              token: token,
+              user: data.loginUser.user,
+            })
+          );
+          navigate("/dashboard");
         } else {
           console.log(
             "Error logging into the user",
@@ -116,9 +134,9 @@ const Login = () => {
             setPassStrength(data.loginUser.error);
           }
         }
-      } catch (error) {
-        console.log(error.message);
       }
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
@@ -167,6 +185,16 @@ const Login = () => {
                 {passStrength === "" ? "" : passStrength}
               </p>
             </div>
+            <label className="role-label">
+              <input
+                type="checkbox"
+                className={!signup ? "role-checkbox-hidden" : "role-checkbox"}
+                checked={isChecked}
+                onChange={handleCheckboxChange}
+                value="admin"
+              />
+              {signup ? "Admin" : ""}
+            </label>
             <br />
           </div>
           <input

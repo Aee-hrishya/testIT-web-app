@@ -11,6 +11,12 @@ const userSchema = new mongoose.Schema(
       maxlength: [20, "Username must be at most 20 characters long"],
     },
     password: { type: String, required: true },
+    role: {
+      type: String,
+      required: true,
+      enum: ["admin", "student"],
+      default: "student",
+    },
   },
   { timestamps: { createdAt: "created_at", updatedAt: "updated_at" } }
 );

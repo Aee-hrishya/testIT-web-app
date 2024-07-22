@@ -10,6 +10,11 @@ const createUserResolver = async (_, { username, password, role }) => {
         success: false,
         error: "Password is required.",
       };
+    } else if (password.length < 8) {
+      return {
+        success: false,
+        error: "Password is not in proper format",
+      };
     }
 
     const saltRounds = 10;
@@ -19,6 +24,7 @@ const createUserResolver = async (_, { username, password, role }) => {
     const newUser = await User.create({
       username,
       password: hashedPassword,
+      role,
     });
 
     //generate token

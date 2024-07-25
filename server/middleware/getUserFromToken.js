@@ -3,19 +3,16 @@ require("dotenv").config();
 const { JWT_SECRET } = process.env;
 
 const getUserFromToken = (token) => {
+  if (!token) {
+    throw new Error("No Token Provided");
+  }
   try {
-    if (token) {
-      return jwt.verify(token, JWT_SECRET);
-    } else {
-      return null;
-    }
+    return jwt.verify(token, JWT_SECRET);
   } catch (error) {
     if (error.name === "TokenExpiredError") {
-      return {
-        error: "Token has expired kindly login again.",
-      };
+      throw new Error("Token has expired. Please login again.");
     } else {
-      return { error: error.message };
+      throw new Error("Invalid token");
     }
   }
 };

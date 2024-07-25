@@ -5,6 +5,8 @@ import LandingPage from "./Components/LandingPage/LandingPage.component";
 import Login from "./Components/Login/Login.component";
 import Navbar from "./Components/Navbar/Navbar.component";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProtectedRoute from "./Components/ProtectedRoute/ProtectedRoute.component";
+import Dashboard from "./Components/Dashboard/Dashboard.component";
 
 function App() {
   return (
@@ -15,6 +17,14 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          ></Route>
         </Routes>
         <Footer />
       </BrowserRouter>

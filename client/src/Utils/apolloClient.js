@@ -3,8 +3,10 @@ import {
   InMemoryCache,
   HttpLink,
   ApolloLink,
-  onError,
 } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
+import store from "../Redux/store";
+import { clearUser } from "../Redux/Slices/userSlice";
 
 // Create an HTTP link
 const httpLink = new HttpLink({
@@ -18,6 +20,8 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
       if (extensions.code === "UNAUTHENTICATED") {
         // Token expired or is invalid
         localStorage.removeItem("authToken");
+        //remove token and user from from the redux state
+        store.dispatch(clearUser());
       }
     });
   }

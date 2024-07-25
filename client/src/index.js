@@ -6,6 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./Redux/store";
 import client from "./Utils/apolloClient";
+import { ApolloProvider } from "@apollo/client";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

@@ -4,7 +4,7 @@
   max-height: 3rem;
   background-color: black;
   color: white;
-  position: fixed;
+  position: sticky;
   opacity: 0.8;
   display: flex;
   justify-content: space-between;
@@ -45,6 +45,24 @@
         cursor: pointer;
         box-shadow: 0 0 2px 2px white;
       }
+    }
+  }
+
+  .authenticated-navbar {
+    width: 15rem;
+    max-width: 15rem;
+    height: 3rem;
+    max-height: 3rem;
+    color: white;
+    text-decoration: none;
+    height: 25px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border: 1px solid white;
+      border-radius: 2px;
+      cursor: pointer;
+      box-shadow: 0 0 2px 2px white;
     }
   }
 }

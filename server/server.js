@@ -15,10 +15,15 @@ const startServer = async () => {
   const server = new ApolloServer({
     typeDefs,
     resolvers,
+    introspection: true,
     context: ({ req }) => {
-      const token = req.authorization.header || "";
-      const user = getUserFromToken(token);
-      return { user };
+      const token = req.headers.authorization || "";
+      try {
+        const user = getUserFromToken(token);
+        return { user };
+      } catch (error) {
+        console.error("Authentication error:", error.message);
+      }
     },
   });
 

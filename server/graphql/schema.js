@@ -24,10 +24,11 @@ const typeDefs = gql`
   type DashboardResponse {
     success: Boolean!
     error: String
+    userDetails: User
   }
 
   type Query {
-    getProtectedRouteDashboard: DashboardResponse!
+    dashboard: DashboardResponse!
   }
 
   type Mutation {

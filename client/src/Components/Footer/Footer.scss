@@ -1,10 +1,13 @@
 .footer {
-  height: 30vh;
+  height: 40vh;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: end;
   background-color: #2a2b2e;
+  color: white;
+  position: relative;
+  bottom: 0;
 
   .copyright {
     width: fit-content;

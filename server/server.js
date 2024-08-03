@@ -17,11 +17,15 @@ const startServer = async () => {
     resolvers,
     introspection: true,
     context: ({ req }) => {
-      const token = req.headers.authorization || "";
+      const token = req.headers.authorization?.split(" ")[1] || "";
+      console.log(token);
       try {
         const user = getUserFromToken(token);
+        console.log("we are inside try");
         return { user };
       } catch (error) {
+        console.log("we are inside  catch");
+        console.log(token);
         console.error("Authentication error:", error.message);
       }
     },

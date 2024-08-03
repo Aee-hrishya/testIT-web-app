@@ -1,10 +1,13 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Navigate, useNavigate } from "react-router-dom";
+import { setUser } from "../../Redux/Slices/userSlice";
 
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-  if (isAuthenticated === null) {
+  const isAuthenticated = localStorage.getItem("authToken");
+
+  console.log(isAuthenticated);
+  if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
   return children;

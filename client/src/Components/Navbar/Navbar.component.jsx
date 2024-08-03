@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Navbar.scss";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,29 +16,17 @@ const Navbar = () => {
     navigate("/login");
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      dispatch(setUser({ token: token }));
-    } else {
-      console.log("Token is not present.");
-      navigate("/login");
-    }
-  }, [dispatch, navigate]);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, navigate]);
-
   return (
     <>
       <div className="nav-bar">
         <div className="logo-container">
-          <Link className="logo" to={"/"}>
-            Test It
-          </Link>
+          {isAuthenticated ? (
+            <div className="logo">Test it</div>
+          ) : (
+            <Link className="logo" to={"/"}>
+              Test It
+            </Link>
+          )}
         </div>
         {isAuthenticated ? (
           <Link className="authenticated-navbar" onClick={logoutHandler}>
